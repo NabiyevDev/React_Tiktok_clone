@@ -1,24 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React,{useState,useEffect} from 'react'
+import db from './tiktok/firebase/config';
+import './tiktok/styles/style.css'
+import NavSection from './tiktok/NavSec';
+import VideoMain from './tiktok/videoMain';
 function App() {
+
+  const [videos,setVideos] = useState([])
+
+  useEffect(() => {
+    db.collection("videos").onSnapshot((snapshot) => 
+    setVideos(snapshot.docs.map((doc) => doc.data()))
+    )
+  },[])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <>
+    <NavSection/>
+    <div className='tiktokVideos'>
+      {videos.map(
+        ({page,description, music, likes, comments, shares, url}) => (
+          <VideoMain
+          page={page}
+          description={description}
+          music={music}
+          likes={likes}
+          comments={comments}
+          shares={shares}
+          url={url}
+
+          />
+        )
+      )}
     </div>
+    </>
   );
 }
 
